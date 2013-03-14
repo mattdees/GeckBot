@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+
+use lib 'lib';
+
+use GeckBot::IRC;
+ 
+# with all known options
+my $bot = GeckBot::IRC->new(
+ 
+  server => "irc.freenode.net",
+  port   => "6667",
+  channels => ["#geckbot", '#reddit-houston'],
+ 
+  nick      => "autogeck",
+  alt_nicks => ["geckamatic", "geckaphile"],
+  username  => "geckity",
+  name      => "Geckity GECK GECK GECK",
+  ignore_list => [qw()],
+ 
+  'plugins' => ['8ball', 'SpellCheck', "Roulette", 'URL', 'Reddit'],
+  'reddit_config' => {
+  	'#geckbot' => 'funny',
+  	'#reddit-houston' => 'houston',
+  }
+
+);
+$bot->run();

@@ -1,0 +1,135 @@
+package GeckBot::Plugins::Reddit;
+
+use WWW::Reddit::Reader;
+
+use Data::Dumper;
+
+my $tracking_dir = 'var/reddit_check'; #reletive to $geckbot->{'plugin_base'};
+
+#
+#sub init {
+#	my ( $sym, $self ) = @_;
+#	print Dumper $self->{'reddit_config'};
+#	foreach my $channel ( keys %{ $self->{'reddit_config'} } ) {
+##		$self->log("Adding subprocess for checking /r/${subreddit} for $channel");
+#
+#		$self->forkit(
+#			'run' => \&check_reddit,
+#			'channel' => $channel,
+#			'body' => $subreddit,
+#		);
+#	}
+#
+#}
+
+
+sub tick {
+	my ( $self ) = @;
+	
+	foreach my $channel ( keys %{ $self->{'reddit_config'} } ) {
+		my $subreddit = $self->{'reddit_config'}->{$channel};
+		
+		$self->forkit(
+			'run' => \&check_reddit,
+			'channel' => $channel,
+			'body' => $subreddit,
+		);
+	}
+	return;
+}
+
+sub check_reddit {
+	my ( $subreddit ) = @_;
+	sleep 30;
+	my @reddit_new = reddit_read($subreddit);
+
+	my $tracking_data = load_tracking( $channel );
+
+	my $last_created_time = exists $tracking_data->{$channel}->{'last_created_time'} ? $tracking_data->{$channel}->{'last_created_time'}  : 0;
+	#print "Initial last_created_time: $last_created_time\n";
+	$0 = "GeckBot Reddit Worker $subreddit - $last_created_time";
+	my $count = 0;
+
+	while ( 1 ) {
+		$count++;
+		sleep 30;
+
+		@reddit_new = reddit_read($subreddit);
+		my $this_checks_newest_time = $reddit_new[0]->{'data'}->{'created_utc'};
+		#print "this_checks_newest_time: $this_checks_newest_time\n";
+		
+		foreach my $entry ( @reddit_new ) {
+			my $data = $entry->{'data'};
+	#		print Dumper $data;
+			#print "checking id " . $data->{'id'} . "\n";
+			if ( $data->{'created_utc'} > $last_created_time ) {
+				print "New post on r/${subreddit} detected: " . $data->{'title'} . "\n";
+				print "http://reddit.com/r/${subreddit}/" . $data->{'id'} . "/\n";
+			}
+			else {
+				last;
+			}
+
+		}
+
+		$tracking_data->{'last_created_time'} = $this_checks_newest_time;
+		save_tracking($channel, $tracking_data);
+
+		#print "new last_created_time: $last_created_time\n\n\n";
+		$0 = "GeckBot Reddit Worker $subreddit - channel - $last_created_time - $count";
+	}
+}
+
+sub load_tracking {
+	my ( $channel ) = @_;
+	$channel =~ s/\#//g;
+	my $tracking_file = "${tracking_dir}/${channel}";
+	my $tracking_data = {};
+	if ( -e $tracking_file );
+		open my $tracking_fh, '<', $tracking_file;
+		my $tracking_string = <$tracking_fh>;
+		eval { 
+			$tracking_data = JSON::XS::decode_json($tracking_string);
+		};
+		if ( $@ ) {
+			#todo: file-based logging
+		}
+		close $tracking_fh;
+	}
+
+	return $tracking_data;
+}
+
+sub save_tracking {
+	my ($channel, $tracking_data ) = @_;
+	my $tracking_file = "${tracking_dir}/${channel}";
+
+	my $tracking_string = JSON::XS::decode_json($tracking_data);
+	open my $tracking_fh, '>', $tracking_file;
+	print $tracking_fh $tracking_string;
+	close $tracking_fh;
+}
+
+sub reddit_read {
+    my ( $subreddit ) = @_;
+    my @result;
+    my $http = HTTP::Tiny->new( 'agent' => 'Reddit Reader v' . $VERSION );
+    my ( $parsed_response, $page_url, $next, $res );
+    $page_url = "http://www.reddit.com/r/$subreddit/new.json";
+    print "grabbing new page : $page_url\n" if $debug;
+
+    $res = $http->get($page_url);
+    if ( $res->{'status'} != 200 ) {
+        return 'non-200 response recieved';
+    }
+
+    $parsed_response = JSON::XS::decode_json( $res->{'content'} );
+    
+    print Dumper $parsed_response;
+    #$self->process_result( $subreddit, $parsed_response->{'data'}->{'children'} );
+    return @result;
+}
+
+
+
+1;
