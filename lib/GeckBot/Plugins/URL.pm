@@ -4,7 +4,7 @@ use URI::Find;
 use HTTP::Tiny;
 use HTML::TreeBuilder::XPath;
 
-my $http = HTTP::Tiny->new();
+my $http = HTTP::Tiny->new( 'max_size' => 65536 );
 
 sub said {
 	my ( $self, $said_hr ) = @_;
