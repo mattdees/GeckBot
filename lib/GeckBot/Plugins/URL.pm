@@ -1,10 +1,11 @@
 package GeckBot::Plugins::URL;
 
+use Data::Dumper;
 use URI::Find;
 use HTTP::Tiny;
 use HTML::TreeBuilder::XPath;
 
-my $http = HTTP::Tiny->new( 'max_size' => 65536 );
+my $http = HTTP::Tiny->new( 'max_size' => 1048576 );
 
 sub said {
 	my ( $self, $said_hr ) = @_;
@@ -32,10 +33,11 @@ sub said {
 
 sub print_uri_title {
 	my ( $uri ) = @_;
-	if ( !defined $uri || $uri eq '' ) {
+	my $title = get_uri_title($uri);
+	if ( !$title ) {
 		return;
 	}
-	print "[ " . get_uri_title($_[0]) . " ]\n";
+	print "[ ${title} ]\n";
 }
 
 sub get_uri_title {
@@ -43,12 +45,22 @@ sub get_uri_title {
 
 	my $tb = HTML::TreeBuilder::XPath->new();
 	my $res = $http->get($uri);
+	
 	if ( $res->{'status'} != 200 ) {
 		return;
 	}
+	
 	my $html = $res->{'content'};
 	$tb->parse($html);
+	
+	if (!$tb->exists('/html/head/title') ) {
+		return 0;
+	}
+
 	my $title = $tb->findvalue('/html/head/title');
+	if ( !$title ) {
+		return 0;
+	}
 	return $title;
 }
 

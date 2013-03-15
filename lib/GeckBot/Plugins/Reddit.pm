@@ -42,7 +42,7 @@ sub tick {
 
 sub check_reddit {
 	my ( $subreddit, $channel, $firstrun ) = @_;
-	my @reddit_new = reddit_read($subreddit);
+
 	my $tracking_data = load_tracking( $channel );
 
 	my $last_created_time = exists $tracking_data->{$channel}->{'last_created_time'} ? $tracking_data->{$channel}->{'last_created_time'}  : 0;
@@ -50,8 +50,11 @@ sub check_reddit {
 	#print "Initial last_created_time: $last_created_time\n";
 
 	@reddit_new = reddit_read($subreddit);
-	my $this_checks_newest_time = $reddit_new[0]->{'data'}->{'created_utc'};
 	
+	exit if !exists $reddit_new[0]->{'data'}->{'created_utc'};
+	my $this_checks_newest_time = $reddit_new[0]->{'data'}->{'created_utc'};
+
+
 	#print "this_checks_newest_time: $this_checks_newest_time\n";
 	if ( $last_created_time == $this_checks_newest_time ) {
 		return;
@@ -118,7 +121,7 @@ sub reddit_read {
 
     $res = $http->get($page_url);
     if ( $res->{'status'} != 200 ) {
-        return 'non-200 response recieved';
+        exit;
     }
 
     $parsed_response = JSON::XS::decode_json( $res->{'content'} );
