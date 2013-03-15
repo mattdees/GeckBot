@@ -10,6 +10,8 @@ use Symbol;
 use Cwd;
 use Data::Dumper;
 
+$SIG{CHLD} = sub { wait };
+
 sub init {
 	my ( $self ) = @_;
 
