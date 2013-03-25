@@ -2,8 +2,10 @@ package GeckBot::Plugins::URL;
 
 use Data::Dumper;
 use URI::Find;
+use IO::Socket::SSL;
 use HTTP::Tiny;
 use HTML::TreeBuilder::XPath;
+use HTML::Entities 'decode_entities';
 
 my $http = HTTP::Tiny->new( 'max_size' => 1048576 );
 
@@ -37,7 +39,8 @@ sub print_uri_title {
 	if ( !$title ) {
 		return;
 	}
-	print "[ ${title} ]\n";
+	$title = substr $title, 0, 140;
+	print "[ " . decode_entities( $title ) . " ]\n";
 }
 
 sub get_uri_title {
@@ -47,7 +50,7 @@ sub get_uri_title {
 	my $res = $http->get($uri);
 	
 	if ( $res->{'status'} != 200 ) {
-		return;
+		return 0;
 	}
 	
 	my $html = $res->{'content'};
