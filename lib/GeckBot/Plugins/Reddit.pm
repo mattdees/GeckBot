@@ -2,6 +2,7 @@ package GeckBot::Plugins::Reddit;
 
 use JSON::XS;
 use HTTP::Tiny;
+use HTML::Entities 'decode_entities';
 use Data::Dumper;
 
 my $tracking_dir = 'var/reddit_check'; #reletive to $geckbot->{'plugin_base'};
@@ -63,7 +64,7 @@ sub check_reddit {
 	foreach my $entry ( @reddit_new ) {
 		my $data = $entry->{'data'};
 		if ( $data->{'created_utc'} > $last_created_time ) {
-			print "New r/${subreddit} post: " . $data->{'title'} . "\n" if !$firstrun;
+			print "New r/${subreddit} post: " . decode_entities( $data->{'title'} ) . "\n" if !$firstrun;
 			print "[ http://reddit.com/r/${subreddit}/" . $data->{'id'} . "/ ]\n" if !$firstrun;
 		}
 		else {
