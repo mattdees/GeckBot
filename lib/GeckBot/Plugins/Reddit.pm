@@ -45,7 +45,7 @@ sub check_reddit {
 	my ( $subreddit, $channel, $firstrun ) = @_;
 
 	my $tracking_data = load_tracking( $channel );
-
+	$tracking_data->{$channel}->{'previous'} = [] if !exists $tracking_data->{$channel}->{'previous'};
 	my $last_created_time = exists $tracking_data->{$channel}->{'last_created_time'} ? $tracking_data->{$channel}->{'last_created_time'}  : 0;
 	
 	#print "Initial last_created_time: $last_created_time\n";
@@ -63,13 +63,18 @@ sub check_reddit {
 	
 	foreach my $entry ( @reddit_new ) {
 		my $data = $entry->{'data'};
+
 		if ( $data->{'created_utc'} > $last_created_time ) {
-			print "New r/${subreddit} post: " . decode_entities( $data->{'title'} ) . "\n" if !$firstrun;
-			print "[ http://reddit.com/r/${subreddit}/" . $data->{'id'} . "/ ]\n" if !$firstrun;
+			if ( $data->{'id'} ~~ $tracking_data->{$channel}->{'previous'} ) {
+				next;
+			}
+			add_id( $tracking_data->{$channel}->{'previous'}, $data->{'id'} );
+			print "r/houston: http://redd.it/" . $data->{'id'} . "/ - " . decode_entities( $data->{'title'} ) . "\n" if !$firstrun;
 		}
 		else {
 			last;
 		}
+
 
 	}
 
@@ -84,7 +89,7 @@ sub load_tracking {
 	my ( $channel ) = @_;
 	$channel =~ s/\#//g;
 	my $tracking_file = "${tracking_dir}/${channel}";
-	my $tracking_data = {};
+	my $tracking_data = { $channel => {} };
 	if ( -e $tracking_file ) {
 		open my $tracking_fh, '<', $tracking_file;
 		my $tracking_string = <$tracking_fh>;
@@ -110,6 +115,16 @@ sub save_tracking {
 	open my $tracking_fh, '>', $tracking_file;
 	print $tracking_fh $tracking_string;
 	close $tracking_fh;
+}
+
+sub add_id {
+	my ( $array, $id ) = @_;
+	push @{ $array }, $id;
+	if ( length @{ $array } > 50 ) {
+		pop @{ $array };
+	}
+
+	return $array;
 }
 
 sub reddit_read {
