@@ -10,7 +10,7 @@ __PACKAGE__->table('msgs');
 __PACKAGE__->add_columns(
 	msg_id => {
 		data_type => 'integer',
-		size => 256,
+		size => 32,
 		is_nullable => 0,
 		is_auto_increment => 1,
 	},

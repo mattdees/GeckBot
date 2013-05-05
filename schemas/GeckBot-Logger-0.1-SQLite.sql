@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Sun May  5 01:38:22 2013
+-- Created on Sun May  5 13:15:02 2013
 -- 
 
 BEGIN TRANSACTION;
@@ -22,10 +22,10 @@ CREATE TABLE channels (
 DROP TABLE karma;
 
 CREATE TABLE karma (
-  karma_id INTEGER PRIMARY KEY NOT NULL,
   key varchar(32) NOT NULL,
   value int(16) NOT NULL,
-  channel_id int(16) NOT NULL
+  channel_id int(16) NOT NULL,
+  PRIMARY KEY (channel_id, key)
 );
 
 --

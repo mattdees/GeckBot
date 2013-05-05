@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::PostgreSQL
--- Created on Sun May  5 01:38:22 2013
+-- Created on Sun May  5 13:15:02 2013
 -- 
 --
 -- Table: channels.
@@ -18,11 +18,10 @@ CREATE TABLE "channels" (
 --
 DROP TABLE "karma" CASCADE;
 CREATE TABLE "karma" (
-  "karma_id" bigserial NOT NULL,
   "key" character varying(32) NOT NULL,
   "value" bigint NOT NULL,
   "channel_id" bigint NOT NULL,
-  PRIMARY KEY ("karma_id")
+  PRIMARY KEY ("channel_id", "key")
 );
 
 --
