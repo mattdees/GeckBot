@@ -40,9 +40,7 @@ sub init {
 		}
 	}
 
-
-	my $dsn = $self->{'dsn'};
-	my $schema = GeckBot::Logger->connect($dsn);
+	my $schema = GeckBot::Logger->connect( @{ $self->{'dsn'} } );
 	$self->{'schema'} = $schema;
 	$self->{'channel_ids'} = _build_channel_id_cache($schema);
 
