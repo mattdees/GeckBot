@@ -1,5 +1,8 @@
 package GeckBot::Plugins::Roulette;
 
+use strict;
+use warnings;
+
 sub init {
 	my ( $sym, $self ) = @_;
 	$self->{'roulette_session'} = {};
@@ -30,6 +33,7 @@ sub roulette {
 		$self->{'roulette_session'}->{$channel} = 1;
 		return "$nick has started a game of roulette type !roulette in order to pull the trigger";
 	}
+	return;
 }
 
 1;

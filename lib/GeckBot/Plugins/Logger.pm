@@ -1,5 +1,8 @@
 package GeckBot::Plugins::Logger;
 
+use strict;
+use warnings;
+
 use POSIX ('strftime');
 use GeckBot::Logger;
 

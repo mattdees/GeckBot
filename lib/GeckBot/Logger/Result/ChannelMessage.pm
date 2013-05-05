@@ -1,5 +1,8 @@
 package GeckBot::Logger::Result::ChannelMessage;
 
+use strict;
+use warnings;
+
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('msgs');

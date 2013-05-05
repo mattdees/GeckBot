@@ -126,6 +126,7 @@ sub _build_triggers {
 			$self->{'triggers'}->{$trigger} = $plugin_triggers->{$trigger};
 		} 
 	}
+	return;
 }
 
 sub said {

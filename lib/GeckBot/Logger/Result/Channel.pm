@@ -1,5 +1,8 @@
 package GeckBot::Logger::Result::Channel;
 
+use strict;
+use warnings;
+
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('channels');
