@@ -26,7 +26,11 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->has_many(
-	msg => 'GeckBot::Logger::Result::ChannelMessage', 'channel_id'
+	msg => 'GeckBot::Logger::Result::ChannelMessage', 'channel_id',
+);
+
+__PACKAGE__->has_many(
+	karma => 'GeckBot::Logger::Result::Karma', 'channel_id',
 );
 
 1;

@@ -25,63 +25,30 @@ sub get_karma {
 	my ( $self, $said_hr ) = @_;
 
 	my $key =$said_hr->{'body'};
-	my $result = $self->schema->resultset('Karma')->search(
+	my $result = $self->schema->resultset('Karma')->find(
 		{
 			'channel_id' => $self->get_channel_id( $said_hr->{'channel'} ),
 			'key' => $key,
 		},
-		{
-			rows => 1
-		}
-	)->single;
-	if ( defined $result ) {
-		return "$key has " . $result->value . " karma";
-	}
-	return "$key has 0 karma";
+	);
+	my $value = defined $result ? $result->value : 0;
+	return "$key has $value karma";
 
 }
 
 sub change_value {
 	my ( $self, $operation, $channel_id, $key ) = @_;
 	my $value;
-	my $result = $self->schema->resultset('Karma')->search(
-		{
-			'channel_id' => $channel_id,
-			'key' => $key,
-		},
-		{
-			rows => 1
-		}
-	)->single;
-
-	if ( !defined $result ) {
-		# if the karma entry does not exist
-		if ( $operation eq '++' ) {
-			$value = 1;
-		}
-		else {
-			$value = -1;
-		}
-
-		$self->schema->resultset('Karma')->create(
-			{
-				'channel_id' => $channel_id,
-				'key' => $key,
-				'value' => $value,
-			}
-		);
+	my $karma = $self->schema->resultset('Channel')->find({'id' => $channel_id})
+		->karma->find_or_new({ key => $key });
+	if ( $operation eq '++' ) {
+		$karma->value($karma->value+1);
 	}
 	else {
-		$value = $result->value;
-		if ( $operation eq '++' ) {
-			$value++;
-		}
-		else {
-			$value--;
-		}
-		$result->update( {'value' => $value} );
+		$karma->value($karma->value-1);
 	}
-	return $value;
+	$karma->insert_or_update;
+	return $karma->value;
 }
 
 1;

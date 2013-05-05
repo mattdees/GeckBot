@@ -2,15 +2,18 @@ package GeckBot::Logger::Result::Karma;
 
 use base qw/DBIx::Class::Core/;
 
+
+sub new {
+	my ( $class, $attrs ) = @_;
+	$attrs->{value} = 0 unless defined $attrs->{value};
+	my $new = $class->next::method($attrs);
+	return $new;
+}
+
+
 __PACKAGE__->table('karma');
 
 __PACKAGE__->add_columns(
-	karma_id => {
-		data_type => 'integer',
-		size => 256,
-		is_nullable => 0,
-		is_auto_increment => 1,
-	},
 	key => {
 		data_type => 'varchar',
 		size => 32,
@@ -28,7 +31,7 @@ __PACKAGE__->add_columns(
 	}
 );
 
-__PACKAGE__->set_primary_key('karma_id');
+__PACKAGE__->set_primary_key(qw(channel_id key));
 
 
 1;

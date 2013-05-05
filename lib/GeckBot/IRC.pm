@@ -157,7 +157,7 @@ sub said {
 sub _build_channel_id_cache {
 	my ( $schema ) = @_;
 	my $channel_ref = {};
-	my $channels = $schema->resultset('Channel')->search({}, {});
+	my $channels = $schema->resultset('Channel');
 	foreach my $channel ($channels->all) {
 		print STDERR "Adding " . $channel->name . " to cache\n";
 		$channel_ref->{ $channel->name } = $channel->id;
