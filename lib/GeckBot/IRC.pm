@@ -39,6 +39,13 @@ sub init {
 			print "done!\n";
 		}
 	}
+
+
+	my $dsn = $self->{'dsn'};
+	my $schema = GeckBot::Logger->connect($dsn);
+	$self->{'schema'} = $schema;
+	$self->{'channel_ids'} = _build_channel_id_cache($schema);
+
 	return 1;
 }
 
@@ -141,6 +148,52 @@ sub said {
 		}
 	}
 	return join( ' ', @res );
+}
+
+###
+# SQL-related functions
+###
+
+sub _build_channel_id_cache {
+	my ( $schema ) = @_;
+	my $channel_ref = {};
+	my $channels = $schema->resultset('Channel')->search({}, {});
+	foreach my $channel ($channels->all) {
+		print STDERR "Adding " . $channel->name . " to cache\n";
+		$channel_ref->{ $channel->name } = $channel->id;
+	}
+	return $channel_ref;
+}
+
+
+# get the channel id, if it does not exist, create it.
+sub get_channel_id {
+	my ( $self, $channel ) = @_;
+	if ( exists $self->{'channel_ids'}->{ $channel } ) {
+		return $self->{'channel_ids'}->{ $channel };
+	}
+	else {
+		return $self->add_channel( $channel);
+	}
+}
+
+sub add_channel {
+	my ( $self, $channel ) = @_;
+	my $rs = $self->{'schema'}->resultset('Channel');
+
+	my $result = $rs->create(
+		{
+			'name' => $channel,
+			'network' => $self->{'server'},
+		},
+	);
+	$self->{'channel_ids'}->{$channel} = $result->id;
+	return $result->id;
+}
+
+sub schema {
+	my ( $self ) = @_;
+	return $self->{'schema'};
 }
 
 1;

@@ -21,7 +21,11 @@ my $bot = GeckBot::IRC->new(
   'reddit_config' => {
   	'#geckbot' => 'funny',
   	'#reddit-houston' => 'houston',
-  }
+  },
+  'logger' => {
+    'dsn' => 'dbi:SQLite:dbname=testdb.sqlite',
+    'channels' => ['#reddit-houston', '#geckbot' ],
+  },
 
 );
 $bot->run();
