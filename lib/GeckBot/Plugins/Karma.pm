@@ -7,14 +7,16 @@ sub said
 {
     my ($self, $said_hr) = @_;
     if ($said_hr->{'body'} =~ /(.+)(\+\+|\-\-)$/) {
-        my $key        = $1;
-        my $operation  = $2;
-        if ( $key =~ /^(?:.+\ ){2,}.+$/ ) {
-        # if the string has more than two spaces... 
-        	return "Invalid karma key $key";
+        my $key       = $1;
+        my $operation = $2;
+
+        if ($key =~ /^(?:.+\ ){2,}.+$/) {
+            # if the string has more than two spaces...
+            return "Invalid karma key $key";
         }
+        $key =~ s/^\W*(\w+)\W*$/$1/g;
         my $channel_id = $self->get_channel_id($said_hr->{'channel'});
-        my $value      = change_value($self, $operation, $channel_id, $key);
+        my $value = change_value($self, $operation, $channel_id, $key);
         return "Karma for $key is now " . $value;
     }
     return;
@@ -44,7 +46,6 @@ sub get_karma
 sub change_value
 {
     my ($self, $operation, $channel_id, $key) = @_;
-    $key =~ s/^\W*(\w+)\W*$/$1/g;
     my $value;
     my $karma =
       $self->schema->resultset('Channel')->find({ 'id' => $channel_id })
