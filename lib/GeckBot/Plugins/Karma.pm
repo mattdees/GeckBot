@@ -9,7 +9,7 @@ sub said
     if ($said_hr->{'body'} =~ /(.+)(\+\+|\-\-)$/) {
         my $key        = $1;
         my $operation  = $2;
-        if ( $string =~ /^(?:.+\ ){2,}.+$/ ) {
+        if ( $key =~ /^(?:.+\ ){2,}.+$/ ) {
         # if the string has more than two spaces... 
         	return "Invalid karma key $key";
         }
