@@ -17,7 +17,7 @@ sub said
         $key =~ s/^\W*(\w+)\W*$/$1/g;
         my $channel_id = $self->get_channel_id($said_hr->{'channel'});
         my $value = change_value($self, $operation, $channel_id, $key);
-        return "Karma for $key is now " . $value;
+        return "PUPPIES!";
     }
     return;
 }
