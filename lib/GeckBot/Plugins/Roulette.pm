@@ -33,7 +33,7 @@ sub roulette {
 		$self->{'roulette_session'}->{$channel} = 1;
 		return "$nick has started a game of roulette type !roulette in order to pull the trigger";
 	}
-	return;
+	return undef;
 }
 
 1;
