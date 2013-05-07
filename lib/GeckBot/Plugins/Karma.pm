@@ -15,6 +15,7 @@ sub said
             return;
         }
         $key =~ s/^\W*(\w+)\W*$/$1/g;
+        return if $key eq $said_hr->{'who'};
         my $channel_id = $self->get_channel_id($said_hr->{'channel'});
         my $value = change_value($self, $operation, $channel_id, $key);
         return "Karma for $key is now " . $value;
