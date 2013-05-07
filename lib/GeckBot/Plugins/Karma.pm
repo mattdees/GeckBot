@@ -12,7 +12,7 @@ sub said
 
         if ($key =~ /^(?:.+\ ){2,}.+$/) {
             # if the string has more than two spaces...
-            return "Invalid karma key $key";
+            return;
         }
         $key =~ s/^\W*(\w+)\W*$/$1/g;
         my $channel_id = $self->get_channel_id($said_hr->{'channel'});
