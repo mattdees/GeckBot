@@ -1,6 +1,5 @@
 package GeckBot::Plugins::8ball;
 
-use Data::Dumper;
 
 sub init {
 	my ( $sym, $self ) = @_;
@@ -19,6 +18,9 @@ sub init {
 
 sub eightball {
 	my ( $self, $said_hr ) = @_;
+	if ( $said_hr->{'body'} =~ /freshskippers/ ) {
+		return "Because freshskippers smells like crack and hooker spit";
+	}
 	my $selection = int rand( $self->{'8ball'}->{'size'} );
 	return $self->{'8ball'}->{'strings'}->[$selection];
 }
