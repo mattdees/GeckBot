@@ -18,8 +18,8 @@ sub init {
 
 sub eightball {
 	my ( $self, $said_hr ) = @_;
-	if ( $said_hr->{'body'} =~ /freshskippers/ ) {
-		return "Because freshskippers smells like crack and hooker spit";
+	if ( $said_hr->{'body'} =~ /freshkippers/ ) {
+		return "Because freshkippers smells like crack and hooker spit";
 	}
 	my $selection = int rand( $self->{'8ball'}->{'size'} );
 	return $self->{'8ball'}->{'strings'}->[$selection];
