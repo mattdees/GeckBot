@@ -197,6 +197,10 @@ sub schema {
 	return $self->{'schema'};
 }
 
+# Required to fix issue with UTF-8 decoding the response of forkit() call. Used
+# in the callback parameter.
+#
+# See: Bot::BasicBot <https://rt.cpan.org/Public/Bug/Display.html?id=77459>
 sub decode_utf8_and_say {
 	my ($self, $channel) = (shift, shift);
 	my ($o, $body, $wheel_id) = @_[OBJECT, ARG0, ARG1];
