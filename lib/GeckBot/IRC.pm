@@ -5,6 +5,8 @@ use warnings;
 
 use Bot::BasicBot;
 use parent 'Bot::BasicBot';
+use POE;
+use Encode 'decode_utf8';
 
 use Symbol;
 use Cwd;
@@ -193,6 +195,16 @@ sub add_channel {
 sub schema {
 	my ( $self ) = @_;
 	return $self->{'schema'};
+}
+
+sub decode_utf8_and_say {
+	my ($self, $channel) = (shift, shift);
+	my ($o, $body, $wheel_id) = @_[OBJECT, ARG0, ARG1];
+	$self->say(
+		body => decode_utf8($body),
+		channel => $channel,
+	);
+	return;
 }
 
 1;

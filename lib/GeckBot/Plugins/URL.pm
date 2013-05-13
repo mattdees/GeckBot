@@ -6,8 +6,6 @@ use IO::Socket::SSL;
 use HTTP::Tiny;
 use HTML::TreeBuilder::XPath;
 use HTML::Entities 'decode_entities';
-use Encode 'decode_utf8';
-use POE;
 
 my $http = HTTP::Tiny->new( 'max_size' => 1048576 );
 
@@ -31,14 +29,7 @@ sub said {
 			'run' => \&print_uri_title,
 			'channel' => $said_hr->{'channel'},
 			'body' => $uri,
-			callback => sub {
-				my ($o, $body, $wheel_id) = @_[OBJECT, ARG0, ARG1];
-				$self->say(
-					body => decode_utf8($body),
-					channel => $said_hr->{'channel'},
-				);
-				return;
-			},
+			callback => sub { $self->decode_utf8_and_say($said_hr->{channel}, @_) },
 		);
 	}
 }
