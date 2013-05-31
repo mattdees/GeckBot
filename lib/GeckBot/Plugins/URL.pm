@@ -28,7 +28,8 @@ sub said {
 		$self->forkit(
 			'run' => \&print_uri_title,
 			'channel' => $said_hr->{'channel'},
-			'body' => $uri
+			'body' => $uri,
+			callback => sub { $self->decode_utf8_and_say($said_hr->{channel}, @_) },
 		);
 	}
 }
