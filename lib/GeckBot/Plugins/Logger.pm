@@ -27,10 +27,12 @@ sub seen {
 	my $schema = $self->{'schema'};
 	my $channel_id = $self->get_channel_id( $said_hr->{'channel'} );
 
+	my $search_user = lc $said_hr->{'body'};
+
 	my $result = $schema->resultset('ChannelMessage')->search(
 		{
 			'channel_id' => $channel_id,
-			'sender' => $said_hr->{'body'},
+			'LOWER( me.sender )' => $search_user,
 		},
 		{
 			order_by => { -desc => 'msg_id' },
