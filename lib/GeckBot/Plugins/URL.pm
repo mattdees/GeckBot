@@ -15,13 +15,20 @@ sub said {
 	my $body = $said_hr->{'body'};
 
 	my @uris = ();
-	my $finder = URI::Find->new(
-		sub {
-			my($uri) = shift;
-			push @uris, $uri;
-		}
-	);
-	$finder->find(\$body);
+
+	if ( $body =~ /spotify:([A-z0-9:]+)/ ) {
+		 my @data = split(':', $1);
+		 push @uris, 'http://open.spotify.com/' . join('/', @data);
+	}
+	else {
+		my $finder = URI::Find->new(
+			sub {
+				my($uri) = shift;
+				push @uris, $uri;
+			}
+		);
+		$finder->find(\$body);
+	}
 
 	foreach my $uri ( @uris ) {
 		# I bet you could forkbomb a system using this..
