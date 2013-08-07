@@ -41,4 +41,14 @@ CREATE TABLE msgs (
   channel_id int(16) NOT NULL
 );
 
+--
+DROP TABLE quotes;
+
+CREATE TABLE quotes (
+  key varchar(32) NOT NULL,
+  value varchar(160) NOT NULL,
+  channel_id int(16) NOT NULL,
+  PRIMARY KEY (channel_id, key)
+);
+
 COMMIT;
