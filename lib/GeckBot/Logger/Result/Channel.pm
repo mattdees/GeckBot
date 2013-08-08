@@ -38,7 +38,7 @@ __PACKAGE__->has_many(
 
 
 __PACKAGE__->has_many(
-	karma => 'GeckBot::Logger::Result::Quotes', 'channel_id',
+	quotes => 'GeckBot::Logger::Result::Quotes', 'channel_id',
 );
 
 1;

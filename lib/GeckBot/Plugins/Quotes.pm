@@ -26,7 +26,7 @@ sub quote {
 sub get_quote {
 	my ( $self, $channel_id, $key ) = @_;
 
-    my $result = $self->schema->resultset('Karma')->find(
+    my $result = $self->schema->resultset('Quotes')->find(
         {
             'channel_id' => $channel_id,
             'key'        => $key,
