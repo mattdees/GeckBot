@@ -22,6 +22,7 @@ my $bot = GeckBot::IRC->new(
   	'#geckbot' => 'funny',
   	'#reddit-houston' => 'houston',
   },
+  #'dsn' => ["DBI:mysql:database=$db_name;host=localhost", $db_userame, $db_password, {}, { 'quote_names' => 1 } ],
   'dsn' => 'dbi:SQLite:dbname=testdb.sqlite',
 );
 $bot->run();

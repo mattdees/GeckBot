@@ -17,17 +17,17 @@ __PACKAGE__->table('karma');
 
 __PACKAGE__->add_columns(
     key => {
-        data_type   => 'varchar',
+        data_type   => 'VARCHAR',
         size        => 32,
         is_nullable => 0,
     },
     value => {
-        data_type   => 'int',
+        data_type   => 'INT',
         size        => 16,
         is_nullable => 0,
     },
     channel_id => {
-        data_type   => 'int',
+        data_type   => 'INT',
         size        => 16,
         is_nullable => 0,
     }

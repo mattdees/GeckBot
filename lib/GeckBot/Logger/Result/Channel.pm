@@ -9,18 +9,18 @@ __PACKAGE__->table('channels');
 
 __PACKAGE__->add_columns(
 	id => {
-		data_type => 'integer',
+		data_type => 'INT',
 		size => 32,
 		is_nullable => 0,
 		is_auto_increment => 1,
 	},
 	name => {
-		data_type => 'varchar',
+		data_type => 'VARCHAR',
 		size => 32,
 		is_nullable => 0,
 	},
 	network => {
-		data_type => 'varchar',
+		data_type => 'VARCHAR',
 		size => 64,
 		is_nullable => 0,
 	},
