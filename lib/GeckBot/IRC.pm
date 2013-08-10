@@ -55,7 +55,7 @@ sub init {
 # subs from Bot::BasicBot
 sub _build_actions {
 	my ( $self, $plugin_obj ) = @_;
-	my @actions = qw/ said emoted noticed chanjoin chanpart got_names topic nick_change kicked tick connected userquit /;
+	my @actions = qw/ said emoted noticed chanjoin chanpart chanquit got_names topic nick_change kicked tick connected userquit /;
 	foreach my $action ( @actions ) {
 		if ( my $code = $plugin_obj->can($action) ) {
 			if ( !exists $self->{'actions'}->{$action} ) {
@@ -141,14 +141,108 @@ sub said {
 		}
 	}
 
-	my $action = 'said';
+	return $self->_run_action( 'said', $said_hr );
+}
+
+
+sub emoted {
+	my ( $self, $action_hr ) = @_;
+	my $res = $self->_run_action( 'emoted', $action_hr );
+	return $res;
+}
+
+sub kicked {
+	my ( $self, $action_hr ) = @_;
+	my $res = $self->_run_action( 'kicked', $action_hr );
+	$self->delete_user( $action_hr->{'channel'}, $action_hr->{'kicked'} );
+	return $res;
+}
+
+sub chanjoin {
+	my ( $self, $action_hr ) = @_;
+	my $res = $self->_run_action( 'chanjoin', $action_hr );
+	$self->add_user( $action_hr->{'channel'}, $action_hr->{'who'} );
+	print Dumper $res;
+	return $res;
+}
+
+sub chanpart {
+	my ( $self, $action_hr ) = @_;
+	my $res = $self->_run_action( 'chanpart', $action_hr );
+	$self->delete_user( $action_hr->{'channel'}, $action_hr->{'who'} );
+	return $res;
+}
+
+sub userquit {
+	my ( $self, $action_hr ) = @_;
+
+	my $user = $action_hr->{'who'};
+
+	foreach my $channel ( keys %{ $self->{_channel_users} } ) {
+		if ( exists $self->{_channel_users}->{$channel}->{$user} ) {
+
+			my $chanquit_data = {
+				'who' => $user,
+				'body' => $action_hr->{'body'},
+				'channel' => $channel,
+			};
+
+			$self->_run_action( 'chanquit', $chanquit_data );
+			$self->delete_user( $channel, $user );
+		}
+	}
+}
+
+sub _run_action {
+	my ( $self, $action, $action_data ) = @_;
+	
 	my @res;
 	if ( exists $self->{'actions'}->{$action} ) {
 		foreach my $plugin_action ( @{ $self->{'actions'}->{$action} } ) {
-			push @res, $plugin_action->(@_);
+			push @res, $plugin_action->( $self, $action_data );
 		}
 	}
-	return join( ' ', @res );
+
+	if ( scalar @res ) {
+		return join ' ', @res;
+	}
+	return;
+}
+
+###
+# User Management Functions
+#
+# These functions are used to determine when a user is in a channel
+#
+# Break these out into another module?
+###
+
+sub got_names {
+	my ( $self, $name_hr ) = @_;
+	my $channel = $name_hr->{'channel'};
+	my @user_list = keys %{ $name_hr->{'names'} };
+	$self->create_channel_cache( $channel, @user_list );
+	return;
+}
+
+# create_channel_cache, should be called on got_names()
+sub create_channel_cache {
+	my ( $self, $channel, @user_list ) = @_;
+
+	$self->{_channel_users} = {} if !exists $self->{_channel_users};
+	$self->{_channel_users}->{$channel} = { map { $_ => undef } @user_list };
+}
+
+# add user, should be called on join
+sub add_user {
+	my ( $self, $channel, $user ) = @_;
+	$self->{_channel_users}->{$channel}->{$user} = undef;
+}
+
+# delete user, should be called on part & quit
+sub delete_user {
+	my ( $self, $channel, $user ) = @_;
+	delete $self->{_channel_users}->{$channel}->{$user};
 }
 
 ###

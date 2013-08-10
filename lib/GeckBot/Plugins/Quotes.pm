@@ -18,9 +18,21 @@ sub quote {
 
 	my ( $key, $value ) = split( ' ', $body, 2);
 	if ( !defined $value ) {
-		return get_quote($self, $channel_id, $key) if defined $key;
+		return display_quote($self, $channel_id, $key) if defined $key;
 	}
 	return set_quote($self, $channel_id, $key, $value);
+}
+
+sub display_quote {
+    my ( $self, $channel_id, $key ) = @_;
+
+    my $quote = get_quote( $self, $channel_id, $key );
+
+    if ( defined $quote ) {
+        return "${key}: " . $quote;
+    }
+
+    return "$key has no quote set";
 }
 
 sub get_quote {
@@ -33,10 +45,7 @@ sub get_quote {
         },
     );
 
-    if ( defined $result ) {
-    	return "${key}: " . $result->value;
-    }
-    return "$key has no quote set for it";
+    return defined $result ? $result->value : undef;
 }
 
 sub set_quote {
@@ -54,7 +63,21 @@ sub set_quote {
     	$quotes->insert;
     }
 
-    return "Quote for ${key} is updated";
+    return "Quote for ${key} updated";
+}
+
+sub chanjoin {
+    my ( $self, $join_hr ) = @_;
+    my $channel_id = $self->get_channel_id( $join_hr->{'channel'} );
+
+    my $who = $join_hr->{'who'};
+
+    my $quote = get_quote( $self, $channel_id, $who );
+
+    if ( defined $quote ) {
+        return "\"${quote}\"";
+    }
+    return;
 }
 
 1;
