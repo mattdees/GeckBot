@@ -12,6 +12,8 @@ use Symbol;
 use Cwd;
 use Data::Dumper;
 
+use GeckBot::Logger;
+
 $SIG{CHLD} = sub { wait };
 
 sub init {

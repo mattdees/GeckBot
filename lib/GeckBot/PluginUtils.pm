@@ -3,6 +3,7 @@ package GeckBot::PluginUtils;
 use HTTP::Tiny;
 use JSON::XS;
 use IO::Socket::SSL;
+use Data::Dumper;
 
 =head3 load_tracking( $tracking_dir, $channel )
 
@@ -47,8 +48,8 @@ response - $short_url - the shortened version
 
 sub shorten_url {
 	my ( $url ) = @_;
-
 	my $postdata = encode_json( { 'longUrl' => $url } );
+
 	my $res = HTTP::Tiny->new->post( 'https://www.googleapis.com/urlshortener/v1/url', 
 		{ 
 			'content' => $postdata,
@@ -62,6 +63,9 @@ sub shorten_url {
 		my $data = decode_json( $res->{'content'} );
 		return $data->{'id'};
 	}
-	print STDERR "Could not retrieve short url for $url";
+	else {
+		print STDERR Dumper $res;
+	}
+	return;
 }
 1;

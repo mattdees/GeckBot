@@ -6,6 +6,8 @@ use IO::Socket::SSL;
 use HTTP::Tiny;
 use HTML::TreeBuilder::XPath;
 use HTML::Entities 'decode_entities';
+use GeckBot::PluginUtils 'shorten_url';
+use Data::Structure::Util;
 
 my $http = HTTP::Tiny->new( 'max_size' => 1048576 );
 
@@ -24,7 +26,7 @@ sub said {
 		my $finder = URI::Find->new(
 			sub {
 				my($uri) = shift;
-				push @uris, $uri;
+				push @uris, $uri->as_string;
 			}
 		);
 		$finder->find(\$body);
@@ -48,7 +50,19 @@ sub print_uri_title {
 		return;
 	}
 	$title = substr $title, 0, 140;
-	print "[ " . decode_entities( $title ) . " ]\n";
+	my $res = decode_entities( $title );
+
+	my $short_url = GeckBot::PluginUtils::shorten_url( $uri );
+
+	if ( defined $short_url ) {
+		$res = "$short_url - $res";
+	}
+	else {
+		$res = "[ $res ]";
+	}
+	
+	print $res . "\n";
+#	print "[ " . decode_entities( $title ) . " ]\n";
 }
 
 sub get_uri_title {
