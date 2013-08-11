@@ -7,7 +7,6 @@ use HTTP::Tiny;
 use HTML::TreeBuilder::XPath;
 use HTML::Entities 'decode_entities';
 use GeckBot::PluginUtils 'shorten_url';
-use Data::Structure::Util;
 
 my $http = HTTP::Tiny->new( 'max_size' => 1048576 );
 
