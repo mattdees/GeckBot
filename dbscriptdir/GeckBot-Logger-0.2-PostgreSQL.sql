@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::PostgreSQL
--- Created on Sat Aug 10 17:19:58 2013
+-- Created on Sat Aug 10 21:30:07 2013
 -- 
 --
 -- Table: channel_messages.
@@ -62,5 +62,18 @@ CREATE TABLE "quotes" (
   "value" character varying(160) NOT NULL,
   "channel_id" bigint NOT NULL,
   PRIMARY KEY ("channel_id", "key")
+);
+
+--
+-- Table: rss_feeds.
+--
+DROP TABLE "rss_feeds" CASCADE;
+CREATE TABLE "rss_feeds" (
+  "rss_id" bigserial NOT NULL,
+  "url" character varying(255) NOT NULL,
+  "last_post" bigint NOT NULL,
+  "channel_id" bigint NOT NULL,
+  "title" character varying(32) NOT NULL,
+  PRIMARY KEY ("rss_id")
 );
 

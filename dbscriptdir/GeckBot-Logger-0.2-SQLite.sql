@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Sat Aug 10 17:19:58 2013
+-- Created on Sat Aug 10 21:30:07 2013
 -- 
 
 BEGIN TRANSACTION;
@@ -67,6 +67,19 @@ CREATE TABLE quotes (
   value VARCHAR(160) NOT NULL,
   channel_id INT(16) NOT NULL,
   PRIMARY KEY (channel_id, key)
+);
+
+--
+-- Table: rss_feeds
+--
+DROP TABLE rss_feeds;
+
+CREATE TABLE rss_feeds (
+  rss_id INTEGER PRIMARY KEY NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  last_post INT(16) NOT NULL,
+  channel_id INT(16) NOT NULL,
+  title VARCHAR(32) NOT NULL
 );
 
 COMMIT;

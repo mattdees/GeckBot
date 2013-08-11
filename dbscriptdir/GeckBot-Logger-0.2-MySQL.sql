@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::MySQL
--- Created on Sat Aug 10 17:19:58 2013
+-- Created on Sat Aug 10 21:30:07 2013
 -- 
 SET foreign_key_checks=0;
 
@@ -69,6 +69,20 @@ CREATE TABLE `quotes` (
   `value` VARCHAR(160) NOT NULL,
   `channel_id` integer(16) NOT NULL,
   PRIMARY KEY (`channel_id`, `key`)
+);
+
+DROP TABLE IF EXISTS `rss_feeds`;
+
+--
+-- Table: `rss_feeds`
+--
+CREATE TABLE `rss_feeds` (
+  `rss_id` integer(32) NOT NULL auto_increment,
+  `url` VARCHAR(255) NOT NULL,
+  `last_post` integer(16) NOT NULL,
+  `channel_id` integer(16) NOT NULL,
+  `title` VARCHAR(32) NOT NULL,
+  PRIMARY KEY (`rss_id`)
 );
 
 SET foreign_key_checks=1;
