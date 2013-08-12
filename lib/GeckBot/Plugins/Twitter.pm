@@ -65,8 +65,8 @@ sub check_twitter {
 	exit if $firstrun; # do not display posts if this is the first run
 
 	foreach my $post ( @{ $feed } ) {
-		print '@' .$post->{user}->{screen_name} . ': ' .  $post->{text} . "\n";
 		last if $post->{'id'} <= $last_id;
+		print '@' .$post->{user}->{screen_name} . ': ' .  $post->{text} . "\n";
 	}
 }
 

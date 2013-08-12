@@ -49,15 +49,15 @@ sub print_uri_title {
 		return;
 	}
 	$title = substr $title, 0, 140;
-	my $res = decode_entities( $title );
+	$title = decode_entities( $title );
 
 	my $short_url = GeckBot::PluginUtils::shorten_url( $uri );
 
 	if ( defined $short_url ) {
-		$res = "$short_url - $res";
+		$res = "[ $title ] { $short_url }";
 	}
 	else {
-		$res = "[ $res ]";
+		$res = "[ $title ]";
 	}
 	
 	print $res . "\n";
