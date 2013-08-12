@@ -51,6 +51,11 @@ sub get_quote {
 sub set_quote {
 	my ( $self, $channel_id, $key, $value ) = @_;
 
+    # TODO: check if (1) channel is logged, and person said that
+    if (1 && !check_quote($self, $channel_id, $key, $value) ) {
+        return "${key} didn't say that";
+    }
+
 	my $quotes = $self->schema->resultset('Channel')->find({ 'id' => $channel_id })
         ->quotes->update_or_new(
         	{ 
@@ -78,6 +83,26 @@ sub chanjoin {
         return "\"${quote}\"";
     }
     return;
+}
+
+sub check_quote {
+    my ($self , $channel_id, $key, $value) = @_;
+
+    my $schema = $self->{'schema'};
+
+    my $result = $schema->resultset('ChannelMessage')->search(
+        {
+            'channel_id' => $channel_id,
+            'LOWER( me.sender )' => $key,
+            'msg' => { like => '%'.$value .'%'},
+        },
+        {
+            order_by => { -desc => 'msg_id' },
+            rows => 1
+        }
+    )->single;
+
+    return defined $result ? 1 : 0;
 }
 
 1;
