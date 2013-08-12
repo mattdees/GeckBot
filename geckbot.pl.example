@@ -10,19 +10,28 @@ my $bot = GeckBot::IRC->new(
   server => "irc.freenode.net",
   port   => "6667",
   channels => ["#geckbot", '#reddit-houston'],
- 
+  passworded_channels => {
+    '#geckbot' => 's0m3p4assw0rd',
+  },
   nick      => "autogeck",
   alt_nicks => ["geckamatic", "geckaphile"],
   username  => "geckity",
   name      => "Geckity GECK GECK GECK",
   ignore_list => [qw()],
- 
-  'plugins' => ['8ball', 'SpellCheck', "Roulette", 'URL', 'Reddit'],
-  'reddit_config' => {
+  twitter_creds => {
+     '#somechannel' => {
+        consumer_key        => '__blanked__',
+        consumer_secret     => '__blanked__',
+        access_token        => '__blanked__',
+        access_token_secret => '__blanked__',
+    },
+  },
+  plugins => ['8ball', 'SpellCheck', "Roulette", 'URL', 'Reddit'],
+  reddit_config => {
   	'#geckbot' => 'funny',
   	'#reddit-houston' => 'houston',
   },
   #'dsn' => ["DBI:mysql:database=$db_name;host=localhost", $db_userame, $db_password, {}, { 'quote_names' => 1 } ],
-  'dsn' => 'dbi:SQLite:dbname=testdb.sqlite',
+  dsn => 'dbi:SQLite:dbname=testdb.sqlite',
 );
 $bot->run();

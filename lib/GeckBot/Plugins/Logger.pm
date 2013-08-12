@@ -3,7 +3,8 @@ package GeckBot::Plugins::Logger;
 use strict;
 use warnings;
 
-use POSIX ('strftime');
+use POSIX 'strftime';
+use Date::Parse;
 use GeckBot::Logger;
 
 sub said {
@@ -107,7 +108,7 @@ sub seen {
 	my $result = $schema->resultset('ChannelMessage')->search(
 		{
 			'channel_id' => $channel_id,
-			'LOWER( me.sender )' => $search_user,
+			'sender' => $search_user,
 		},
 		{
 			order_by => { -desc => 'msg_id' },
@@ -115,8 +116,8 @@ sub seen {
 		}
 	)->single;
 	if ( $result ) {
-		my $time = strftime( "%a %b %e %H:%M:%S %Y", localtime( $result->time ));
-		return $said_hr->{'body'} . ' was last seen at ' . $time. " saying: " . $result->msg;
+		my $time = strftime( "%a %b %e %H:%M:%S %Y", localtime( str2time( $result->time ) ) );
+		return $said_hr->{'body'} . ' was last seen on ' . $time. " saying: " . $result->msg;
 	}
 	else {
 		return $said_hr->{'body'} . " has never been seen";

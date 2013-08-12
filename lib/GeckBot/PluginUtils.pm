@@ -35,6 +35,18 @@ sub load_tracking {
 	return $tracking_data;
 }
 
+sub save_tracking {
+	my ($tracking_dir, $channel, $tracking_data ) = @_;
+	$channel =~ s/\#//g;
+	my $tracking_file = "${tracking_dir}/${channel}";
+
+	my $tracking_string = JSON::XS::encode_json($tracking_data);
+
+	open my $tracking_fh, '>', $tracking_file;
+	print $tracking_fh $tracking_string;
+	close $tracking_fh;
+}
+
 
 =head3 shorten_url($url)
 

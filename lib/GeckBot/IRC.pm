@@ -52,6 +52,18 @@ sub init {
 }
 
 
+# Do stuff after we're connected to the server
+sub connected {
+	my ( $self ) = @_;
+
+	if ( exists $self->{'passworded_channels'} ) {
+		foreach my $channel ( keys %{ $self->{'passworded_channels'} } ) {
+			my $password = $self->{'passworded_channels'}->{$channel};
+			$self->join($channel, $password);
+		}
+	} 
+}
+
 
 # build a list of actions to be used, this is for generic passing on of 
 # subs from Bot::BasicBot
@@ -103,8 +115,8 @@ sub tick {
 		#print STDERR Dumper $self->{'ticks'};
 		my $tick_cr = $self->{'ticks'}->{$enabled_plugin}->{'exec'};
 		my $next_run_time = $self->{'ticks'}->{$enabled_plugin}->{'next'};
-		print STDERR "$next_run_time\n\n";
-		if ( $next_run_time == 0 || $next_run_time > $time ) {
+		#print STDERR "$next_run_time\n\n";
+		if ( $next_run_time == 0 || $next_run_time < $time ) {
 			#print Dumper $tick_cr;
 			$self->{'ticks'}->{$enabled_plugin}->{'next'} = $tick_cr->($self);
 		}
