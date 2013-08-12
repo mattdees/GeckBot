@@ -90,8 +90,6 @@ sub check_quote {
 
     my $schema = $self->{'schema'};
 
-    print 'find quote ['.$value.'] for ['.$key.'] in ['.$channel_id.']';
-
     my $result = $schema->resultset('ChannelMessage')->search(
         {
             'channel_id' => $channel_id,
