@@ -93,7 +93,7 @@ sub check_quote {
     my $result = $schema->resultset('ChannelMessage')->search(
         {
             'channel_id' => $channel_id,
-            'LOWER( me.sender )' => $key,
+            'sender' => lc( $key ),
             'msg' => { like => '%'.$value .'%'},
         },
         {
