@@ -72,10 +72,28 @@ sub check_twitter {
 
 sub follow {
 	my ( $self, $said_hr ) = @_;
+	my $channel = $said_hr->{'channel'};
+	my $screen_name = $said_hr->{'body'};
+	eval {
+		$self->{'_twitter_api'}->{$channel}->create_friend( $screen_name );
+	};
+	if ( $@ ) {
+		return "Unable to follow ${screen_name}: " . $@->error;
+	}
+	return "Now following ${screen_name}";
 }
 
 sub unfollow {
-	my ( $self, $sair_hr ) = @_;
+	my ( $self, $said_hr ) = @_;
+	my $channel = $said_hr->{'channel'};
+	my $screen_name = $said_hr->{'body'};
+	eval {
+		$self->{'_twitter_api'}->{$channel}->destroy_friend($screen_name);
+	};
+	if ( $@ ) {
+		return "Unable to unfollow $screen_name: " . $@->error;
+	}
+	return "No longer folowing $screen_name";
 }
 
 sub triggers {
