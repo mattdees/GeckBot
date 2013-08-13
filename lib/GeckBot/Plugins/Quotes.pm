@@ -52,7 +52,7 @@ sub set_quote {
 	my ( $self, $channel_id, $key, $value ) = @_;
 
     # TODO: check if (1) channel is logged, and person said that
-    if (1 && !check_quote($self, $channel_id, $key, $value) ) {
+    if ( $self->plugin_loaded('Logger') && !check_quote($self, $channel_id, $key, $value) ) {
         return "${key} didn't say that";
     }
 

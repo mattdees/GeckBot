@@ -30,6 +30,8 @@ sub init {
 		$self->{'plugin_base'} = cwd;
 	}
 
+	$self->{'_loaded_plugins'} = {};
+
 	if ( exists $self->{'plugins'} && ref $self->{'plugins'} eq 'ARRAY' ) {
 		foreach my $plugin ( @{ $self->{'plugins'} } ) {
 			print "Loading Plugin ${plugin}: ";
@@ -40,6 +42,7 @@ sub init {
 			$self->_build_actions($plugin_obj);
 			$self->_build_triggers($plugin_obj);
 			$self->_build_ticks($plugin_obj);
+			$self->{'_loaded_plugins'}->{$plugin} = undef;
 			print "done!\n";
 		}
 	}
@@ -257,6 +260,15 @@ sub add_user {
 sub delete_user {
 	my ( $self, $channel, $user ) = @_;
 	delete $self->{_channel_users}->{$channel}->{$user};
+}
+
+##
+# Misc Plugin Utility Functions
+##
+
+sub plugin_loaded {
+	my ( $self, $plugin ) = @_;
+	return exists $self->{'_loaded_plugins'}->{$plugin} ? 1 : 0;
 }
 
 ###
