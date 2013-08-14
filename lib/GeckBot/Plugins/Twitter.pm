@@ -124,6 +124,7 @@ sub triggers {
 		'follow' => \&follow,
 		'unfollow' => \&unfollow,
 		'gettweet' => \&gettweet,
+		'gt' => \&gettweet,
 	};
 }
 
