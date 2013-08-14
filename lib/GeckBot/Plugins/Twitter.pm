@@ -74,6 +74,7 @@ sub follow {
 	my ( $self, $said_hr ) = @_;
 	my $channel = $said_hr->{'channel'};
 	my $screen_name = $said_hr->{'body'};
+	$screen_name =~ s/\s//g;	# remove whitespace
 	eval {
 		$self->{'_twitter_api'}->{$channel}->create_friend( $screen_name );
 	};
@@ -87,6 +88,7 @@ sub unfollow {
 	my ( $self, $said_hr ) = @_;
 	my $channel = $said_hr->{'channel'};
 	my $screen_name = $said_hr->{'body'};
+	$screen_name =~ s/\s//g;	# remove whitespace
 	eval {
 		$self->{'_twitter_api'}->{$channel}->destroy_friend($screen_name);
 	};
@@ -96,10 +98,32 @@ sub unfollow {
 	return "No longer folowing $screen_name";
 }
 
+sub gettweet {
+	my ( $self, $said_hr ) = @_;
+
+	my $channel = $said_hr->{channel};
+	my ( $resource, $index ) = split( /\s/, $said_hr->{'body'}, 2);
+	$index = 1 if !defined $index;
+	$index--;
+
+	my $msg;
+	eval {
+			my $res = $self->{'_twitter_api'}->{$channel}->user_timeline( { 'screen_name' => $resource } );
+			my $tweet = $res->[$index];
+			$msg = '@' . $tweet->{'user'}->{'screen_name'} . ': ' . $tweet->{'text'};
+	};
+	if ( $@ ) {
+		return $@->error if ref $@;
+		return "Could not grab tweet for $resource";
+	}
+	return $msg;
+}
+
 sub triggers {
 	return {
 		'follow' => \&follow,
 		'unfollow' => \&unfollow,
+		'gettweet' => \&gettweet,
 	};
 }
 
