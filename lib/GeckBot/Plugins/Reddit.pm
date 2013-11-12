@@ -69,7 +69,7 @@ sub check_reddit {
 				next;
 			}
 			add_id( $tracking_data->{$channel}->{'previous'}, $data->{'id'} );
-			print "r/houston: http://redd.it/" . $data->{'id'} . " - " . decode_entities( $data->{'title'} ) . "\n" if !$firstrun;
+			print "" . decode_entities( $data->{'title'} ) . " - http://redd.it/" . $data->{'id'} . " by 14" . decode_entities( $data->{'author'} ) . "\n" if !$firstrun;
 		}
 		else {
 			last;
@@ -132,7 +132,7 @@ sub reddit_read {
 
     my $http = HTTP::Tiny->new( 'agent' => 'Reddit Reader v' . $VERSION );
     my ( $parsed_response, $page_url, $next, $res );
-    $page_url = "http://www.reddit.com/r/$subreddit/new.json";
+    $page_url = "http://www.reddit.com/r/$subreddit/new.json?sort=new&limit=1";
     print "grabbing new page : $page_url\n" if $debug;
 
     $res = $http->get($page_url);
