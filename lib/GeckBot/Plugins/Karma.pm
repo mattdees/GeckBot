@@ -34,6 +34,7 @@ sub get_karma
     my ( $key, $operation ) = split /\s/, $said_hr->{'body'}, 2;
 
     my $channel_id = $self->get_channel_id($said_hr->{'channel'});
+
     my $value;
 
     if ( defined $operation && $operation =~ /\s*\+\s*(\d+)/) {
@@ -59,7 +60,6 @@ sub get_karma
 sub change_value
 {
     my ($self, $operation, $channel_id, $key, $value) = @_;
-    my $value;
     my $karma =
       $self->schema->resultset('Channel')->find({ 'id' => $channel_id })
       ->karma->find_or_new({ key => $key });
