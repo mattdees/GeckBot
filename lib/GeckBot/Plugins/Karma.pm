@@ -40,7 +40,7 @@ sub get_karma
         $value = change_value($self, '++', $channel_id, $key, $1);
     }
     elsif ( defined $operation && $operation =~ /\s*\-\s*(\d+)/) {
-        $value = change_value($self, --, $channel_id, $key, $1);
+        $value = change_value($self, '--', $channel_id, $key, $1);
     }
     else {
         my $result = $self->schema->resultset('Karma')->find(
