@@ -68,6 +68,4 @@ sub get_feed {
 	print STDERR 'Error while parsing RSS Feed: ' . $url;
 }
 
-
-
 1;

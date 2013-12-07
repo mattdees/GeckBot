@@ -16,7 +16,7 @@ sub new
 __PACKAGE__->table('karma');
 
 __PACKAGE__->add_columns(
-    key => {
+    karma_key => {
         data_type   => 'VARCHAR',
         size        => 32,
         is_nullable => 0,
@@ -33,6 +33,6 @@ __PACKAGE__->add_columns(
     }
 );
 
-__PACKAGE__->set_primary_key(qw(channel_id key));
+__PACKAGE__->set_primary_key(qw(channel_id karma_key));
 
 1;

@@ -41,7 +41,7 @@ sub get_quote {
     my $result = $self->schema->resultset('Quotes')->find(
         {
             'channel_id' => $channel_id,
-            'key'        => $key,
+            'quote_key'        => $key,
         },
     );
 
@@ -59,7 +59,7 @@ sub set_quote {
 	my $quotes = $self->schema->resultset('Channel')->find({ 'id' => $channel_id })
         ->quotes->update_or_new(
         	{ 
-        		key => $key,
+        		quote_key => $key,
         		value => $value,
         	}
         );

@@ -47,7 +47,7 @@ sub get_karma
         my $result = $self->schema->resultset('Karma')->find(
             {
                 'channel_id' => $channel_id,
-                'key'        => $key,
+                'karma_key'        => $key,
             },
         );
         $value = defined $result ? $result->value : 0;
@@ -62,7 +62,7 @@ sub change_value
     my ($self, $operation, $channel_id, $key, $value) = @_;
     my $karma =
       $self->schema->resultset('Channel')->find({ 'id' => $channel_id })
-      ->karma->find_or_new({ key => $key });
+      ->karma->find_or_new({ karma_key => $key });
     if ($operation eq '++') {
         $karma->value($karma->value + $value);
     }
