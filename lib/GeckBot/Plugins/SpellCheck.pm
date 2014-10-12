@@ -24,7 +24,8 @@ sub check {
 		$response = '$word is spelled ok';
 	}
 	else {
-		$response = "word is incorrect - " . join( ' ', $speller->suggest( $word ) );
+		my @suggestions = $speller->suggest( $word ) ;
+		$response = "word is incorrect - " . join( ' ', @suggestions );
 	}
 
 	return $response;
