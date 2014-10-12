@@ -4,8 +4,6 @@ use Text::Aspell;
 
 my $speller = Text::Aspell->new();
 
-$speller->set_option('lang','en_US');
-
 sub triggers {
 	return {
 		'spellcheck' => \&check,
