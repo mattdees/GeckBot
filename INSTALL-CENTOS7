@@ -10,41 +10,60 @@ $ secure_mysql_setup
 
 $ mysql -uroot -p
 
-CREATE DATABASE skagbot
-CREATE USER 'skagbot'@'localhost';
-GRANT ALL ON skagbot.* to 'skagbot'@'localhost';
-SET PASSWORD for 'skagbot'@'localhost' = PASSWORD('l0lzb4lls!');
+CREATE DATABASE $MYSQL_DATABASE
+CREATE USER '$MYSQL_USERNAME'@'localhost';
+GRANT ALL ON $MYSQL_DATABASE.* to '$MYSQL_USERNAME'@'localhost';
+SET PASSWORD for '$MYSQL_USERNAME'@'localhost' = PASSWORD('$MYSQL_PASSWORD');
 
 $ sudo -u $user
 $ vi .my.cnf (create .my.cnf)
 $ exit
+
+DSN LINE IS:   'dsn' => ['DBI:mysql:database=$MYSQL_DATABASE;host=localhost', '$MYSQL_USERNAME', '$MYSQL_PASSWORD', {}, { 'quote_names' => 1 }],
+
 
 # INSTALL PERL DEPS
 
 $ cpanm Bot::BasicBot DBIx::Class JSON Net::Twitter DBD::mysql DateTime::Format::MySQL DateTime JSON Hailo Date::Parse Text::Aspell URI::Find HTML::TreeBuilder::XPath JSON::XS HTTP::Tiny WWW::Wunderground::API File::Cache SQL::Translator Hail Text::
 
 # git clone
-
+git clone https://github.com/MattDees/GeckBot.git
 
 # Install mysql schema
 perl create_scemas.pl
-mysql freenode_towele dbscriptdir/GeckBot-Logger-0.2-MySQL.sql
+mysql freenode_towele < dbscriptdir/GeckBot-Logger-0.2-MySQL.sql
 
-dsn is:
-  'dsn' => ['DBI:mysql:database=freenode_towele;host=localhost', 'towele', 'l0lzb4lls!', {}, { 'quote_names' => 1 }],
+# copy script
+
+cp geckbot.pl.sample mybot.pl
 
 
+# edit config 
+The config is stored in the .pl file itself:
 
-# edit config file
+$ vi mybot.pl
+
 required fields to edit:
 
-  #plugin specific configs:
-    WUNDERGOURND:
-      wunderground_api => { 'key' => '8f48ff94176c5427' },
+  server => "irc.freenode.net",
+  channels => ["#geckbot"],
+  nick      => "skagbot",
+  'dsn' => ['DBI:mysql:database=$MYSQL_DATABASE;host=localhost', '$MYSQL_USERNAME', '$MYSQL_PASSWORD', {}, { 'quote_names' => 1 }],
+
+
+#plugin specific configs:
+    Weather:
+      wunderground_api => { 'key' => ' WUNDERGROUND API KEY ' },
     Reddit:
       reddit_config => {
         '#geckbot' => 'funny',
       },
     Hailo:
       'hailo' => { brn_path => 'towel-e-new.brn' },
+
+
+# RUN THE BOT
+If you incantations have been correct, this should get your bot running
+
+$ perl mybot.pl
 
