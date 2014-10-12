@@ -10,14 +10,8 @@ sub triggers {
 	return {
 		'spellcheck' => \&check,
 		'sc' => \&check,
-		'wordsuggest' => \&suggest,
+		'wordsuggest' => \&check,
 	};
-}
-
-sub suggest {
-	my ( $self, $said_hr ) = @_;
-	my @suggestions = $speller->suggest( $said_hr->{'body'} );
-	return "suggestions: " . join( ' ', @suggestions );
 }
 
 sub check {
