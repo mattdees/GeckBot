@@ -16,7 +16,7 @@ sub tick {
 
     if (@msgs) {
         foreach my $file (@msgs) {
-            my $channel = '#' . $1 if $file =~ /.*\/(\w+).msg/;
+            my $channel = '#' . $1 if $file =~ /.*\/([\w_\-0-9]+).msg/;
             open(FILE, "$file");
             while(<FILE>) {
                 $self->say( 'body' => "$_", 'channel' => $channel );    
