@@ -24,14 +24,18 @@ sub roulette {
 			'body' => "${nick} pulled the triggers... click",
 			'channel' => $channel,
 		);
-		if ( int rand( 6 ) == 0 ) {
+		if ( $self->{'roulette_session'}->{'counter'} == $self->{'roulette_session'}->{'bullet'} ) {
 			$self->kick($channel, $nick, 'BANG');
 			delete $self->{'roulette_session'}->{$channel};
+		} else {
+			$self->{'roulette_session'}->{'counter'}++;
 		}
 	}
 	else {
 		$self->{'roulette_session'}->{$channel} = 1;
-		return "$nick has started a game of roulette type !roulette in order to pull the trigger";
+		$self->{'roulette_session'}->{'bullet'} = int( rand ( 5 ) ) + 1;
+		$self->{'roulette_session'}->{'counter'} = 1;
+		return "$nick has started a game of roulette type !roulette in order to pull the trigger.";
 	}
 	return undef;
 }
