@@ -312,6 +312,11 @@ sub add_channel {
 	return $result->id;
 }
 
+sub help {
+	use Data::Dumper;
+	print Dumper \@_;
+	return 'The glorious geck does not believe in helping those that cannot read perl';
+}
 sub schema {
 	my ( $self ) = @_;
 	return $self->{'schema'};

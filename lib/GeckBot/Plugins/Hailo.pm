@@ -4,14 +4,24 @@ use Data::Dumper;
 
 use Hailo;
 
-my $hailo = Hailo->new(
-	'brain' => 'geckbot.brn',
-);
+my $hailo;
+
 my $learnall = 1;
 
 my %ignore_nicks = (
 	'clutchbot' => 1,
+	'roach' => 1,
 );
+
+sub init {
+	my ( $sym, $self ) = @_;
+	$hailo = Hailo->new(
+	    'brain' => $self->{'hailo'}->{'brn_path'},
+	);
+
+}
+
+
 sub said {
 	my ( $self, $said_hr ) = @_;
 	

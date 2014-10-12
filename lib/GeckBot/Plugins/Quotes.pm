@@ -56,6 +56,10 @@ sub set_quote {
         return "${key} didn't say that";
     }
 
+    if ( !$key ) {
+        return;
+    }
+
 	my $quotes = $self->schema->resultset('Channel')->find({ 'id' => $channel_id })
         ->quotes->update_or_new(
         	{ 
@@ -73,10 +77,13 @@ sub set_quote {
 
 sub chanjoin {
     my ( $self, $join_hr ) = @_;
+
+    if ( !exists $self->{'quote_on_join'} || !$self->{'quote_on_join'} ) {
+        return;
+    }
+
     my $channel_id = $self->get_channel_id( $join_hr->{'channel'} );
-
     my $who = $join_hr->{'who'};
-
     my $quote = get_quote( $self, $channel_id, $who );
 
     if ( defined $quote ) {

@@ -13,11 +13,12 @@ my $firstrun = 1;
 sub init {
 	my ( $sym, $self ) = @_;
 
-	$self->{_twitter_api} = {};
+	$self->{_twitter_api} = { };
 
 	foreach my $channel ( keys %{ $self->{'twitter_creds'} } ) {
 		my %twitter_args = %{ $self->{'twitter_creds'}->{$channel} };
 		$twitter_args{'traits'} = [qw/API::RESTv1_1/];
+		$twitter_args{'ssl'} = 1;
 		$self->{_twitter_api}->{$channel} = Net::Twitter->new( %twitter_args );
 	}
 
