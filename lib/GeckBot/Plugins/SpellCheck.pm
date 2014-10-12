@@ -23,7 +23,17 @@ sub suggest {
 sub check {
 	my ( $self, $said_hr ) = @_;
 	my $word = $said_hr->{'body'};
-	return $speller->check( $word ) ? "$word is spelled ok" : "$word is not spelled ok";
+
+	my $response;
+
+	if ( $speller->check( $word ) ) {
+		$response = '$word is spelled ok';
+	}
+	else {
+		$response = "word is incorrect - " . join( ' ', $speller->suggest( $word ) );
+	}
+
+	return $response;
 }
 
 1;
