@@ -14,6 +14,7 @@ sub said {
 	my ( $self, $said_hr ) = @_;
 	
 	my $body = $said_hr->{'body'};
+	$body =~ s/\x00//g;
 
 	my @uris = ();
 
