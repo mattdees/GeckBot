@@ -1,0 +1,50 @@
+Install on CentOS7:
+This bot is intended to run in a dedicated host/container.
+
+yum groupinstall "Development Tools"
+yum install mariadb mariadb-libs mariadb-server aspell aspell-devel perl-App-cpanminus
+
+# SETUP DB SERVER
+
+$ secure_mysql_setup
+
+$ mysql -uroot -p
+
+CREATE DATABASE skagbot
+CREATE USER 'skagbot'@'localhost';
+GRANT ALL ON skagbot.* to 'skagbot'@'localhost';
+SET PASSWORD for 'skagbot'@'localhost' = PASSWORD('l0lzb4lls!');
+
+$ sudo -u $user
+$ vi .my.cnf (create .my.cnf)
+$ exit
+
+# INSTALL PERL DEPS
+
+$ cpanm Bot::BasicBot DBIx::Class JSON Net::Twitter DBD::mysql DateTime::Format::MySQL DateTime JSON Hailo Date::Parse Text::Aspell URI::Find HTML::TreeBuilder::XPath JSON::XS HTTP::Tiny WWW::Wunderground::API File::Cache SQL::Translator Hail Text::
+
+# git clone
+
+
+# Install mysql schema
+perl create_scemas.pl
+mysql freenode_towele dbscriptdir/GeckBot-Logger-0.2-MySQL.sql
+
+dsn is:
+  'dsn' => ['DBI:mysql:database=freenode_towele;host=localhost', 'towele', 'l0lzb4lls!', {}, { 'quote_names' => 1 }],
+
+
+
+# edit config file
+required fields to edit:
+
+  #plugin specific configs:
+    WUNDERGOURND:
+      wunderground_api => { 'key' => '8f48ff94176c5427' },
+    Reddit:
+      reddit_config => {
+        '#geckbot' => 'funny',
+      },
+    Hailo:
+      'hailo' => { brn_path => 'towel-e-new.brn' },
+
