@@ -13,5 +13,4 @@ Installation - WIP
 =======
 
 To create the necessary database schemas, run the following:
-
-# perl create_schemas.pl
+> perl create_schemas.pl
