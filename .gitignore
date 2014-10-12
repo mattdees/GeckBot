@@ -1,3 +1,4 @@
 dbscriptdir/
 *.sqlite
 *.brn
+*bot.pl
