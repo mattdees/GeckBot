@@ -69,7 +69,7 @@ sub check_reddit {
 				next;
 			}
 			add_id( $tracking_data->{$channel}->{'previous'}, $data->{'id'} );
-			print "r/houston: http://redd.it/" . $data->{'id'} . " - " . decode_entities( $data->{'title'} ) . "\n" if !$firstrun;
+			print "r/$subreddit: http://redd.it/" . $data->{'id'} . " - " . decode_entities( $data->{'title'} ) . "\n" if !$firstrun;
 		}
 		else {
 			last;
