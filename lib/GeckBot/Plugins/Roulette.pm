@@ -25,7 +25,12 @@ sub roulette {
 			'channel' => $channel,
 		);
 		if ( $self->{'roulette_session'}->{'counter'} == $self->{'roulette_session'}->{'bullet'} ) {
-			$self->kick($channel, $nick, 'BANG');
+			if( $self->pocoirc->is_channel_operator( $channel, $self->nick ) ) {
+				# can only kick when a channel operator
+				$self->kick($channel, $nick, 'BANG');
+			} else {
+				$self->say( channel => $channel, body => "BANG: $nick has been eaten by^W^W shot...");
+			}
 			delete $self->{'roulette_session'}->{$channel};
 		} else {
 			$self->{'roulette_session'}->{'counter'}++;
